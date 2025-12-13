@@ -946,7 +946,13 @@ def check_and_create_cookies_file():
 def main() -> None:
     """Botni ishga tushirish."""
     # .env fayldan bot tokenini olish
-    TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+
+    # Tokenni muhit o'zgaruvchilaridan olish va tozalash
+    TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "").strip()
+    
+    # Tokendagi ko'rinmas belgilarni olib tashlash
+    TELEGRAM_BOT_TOKEN = "".join(char for char in TELEGRAM_BOT_TOKEN if ord(char) > 32)
+
     
     if not TELEGRAM_BOT_TOKEN or TELEGRAM_BOT_TOKEN == "YOUR_BOT_TOKEN_HERE":
         print("Xato: TELEGRAM_BOT_TOKEN .env faylida sozlanmagan!")

@@ -1,8 +1,9 @@
 FROM python:3.9-slim
 
-# FFmpeg ni o'rnatish
+# Tizim paketlarini (FFmpeg va git) o'rnatish
 RUN apt-get update && apt-get install -y \
     ffmpeg \
+    git \
     && rm -rf /var/lib/apt/lists/*
 
 # Loyiha fayllarini ko'chirish

@@ -32,19 +32,18 @@ def check_requirements():
 
 def check_env_file():
     """.env faylini tekshirish."""
-    if not os.path.exists('.env'):
-        print("Xato: .env fayli topilmadi!")
-        return False
+    # .env fayli mavjud bo'lsa yuklash
+    if os.path.exists('.env'):
+        load_dotenv()
     
-    load_dotenv()
+    # Tokenni muhit o'zgaruvchilaridan olish
     token = os.getenv('TELEGRAM_BOT_TOKEN')
     
     if not token or token == 'YOUR_BOT_TOKEN_HERE':
-        print("Xato: TELEGRAM_BOT_TOKEN .env faylida sozlanmagan!")
-        print("Iltimos, .env faylini tahrirlang va haqiqiy bot tokenini kiriting.")
+        print("Xato: TELEGRAM_BOT_TOKEN sozlanmagan!")
         return False
     
-    print(".env fayli to'g'ri sozlangan")
+    print("Bot tokeni aniqlandi")
     return True
 
 def install_requirements():

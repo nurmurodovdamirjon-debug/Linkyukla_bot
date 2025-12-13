@@ -99,11 +99,13 @@ class YouTubeHelper:
             'extractor_args': {
                 'youtube': {
                     'skip': ['dash', 'hls'],  # Murakkab formatlarni o'tkazib yuborish
-                    'player_skip': ['configs', 'webpage'],  # Player konfiguratsiyasini o'tkazib yuborish
+                    'player_skip': ['js', 'configs', 'webpage'],  # Player konfiguratsiyasini o'tkazib yuborish
+                    'player_client': ['android', 'ios'],          # Mobil mijozlardan foydalanish
                 }
             },
             'youtube_include_dash_manifest': False,
             'youtube_include_hls_manifest': False,
+            'ignoreerrors': True,  # Xatolarni o'tkazib yuborish (masalan, player extract)
         }
         
         # YouTube uchun maxsus opsiyalar

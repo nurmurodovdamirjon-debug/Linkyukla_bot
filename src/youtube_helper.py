@@ -99,19 +99,22 @@ class YouTubeHelper:
             'extractor_args': {
                 'youtube': {
                     'skip': ['dash', 'hls'],  # Murakkab formatlarni o'tkazib yuborish
-                    'player_skip': ['js', 'configs', 'webpage'],  # Player konfiguratsiyasini o'tkazib yuborish
-                    'player_client': ['android', 'ios'],          # Mobil mijozlardan foydalanish
+                    'player_skip': ['js', 'configs', 'webpage'],
+                    'player_client': ['android', 'ios'],
                 }
             },
             'youtube_include_dash_manifest': False,
             'youtube_include_hls_manifest': False,
-            'ignoreerrors': True,  # Xatolarni o'tkazib yuborish (masalan, player extract)
+            'ignoreerrors': True,
         }
         
         # YouTube uchun maxsus opsiyalar
         if 'youtube.com' in url or 'youtu.be' in url:
-            options['format'] = 'bestvideo[height<=720]+bestaudio/best[height<=720]/bestvideo[height<=480]+bestaudio/best[height<=480]/best'
-            
+            # Formatni soddalashtirish
+            options['format'] = 'best[ext=mp4]/best'
+            # Cookie file ishlatish (agar mavjud bo'lsa)
+            self.add_cookies_to_options(options)
+
         return options
     
     def get_alternative_formats(self) -> list:

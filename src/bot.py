@@ -496,9 +496,10 @@ async def download_video(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         setup_cookies(info_opts)
         setup_proxy(info_opts)
         if is_youtube:
+            info_opts['js_runtimes'] = {'node': {}}
             info_opts['extractor_args'] = {
                 'youtube': {
-                    'player_client': ['mweb', 'android'],
+                    'player_client': ['tv', 'web'],
                 }
             }
         try:

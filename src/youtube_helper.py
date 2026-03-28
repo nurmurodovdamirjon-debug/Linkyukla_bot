@@ -72,9 +72,10 @@ class YouTubeHelper:
             'prefer_ffmpeg': True,
             'keepvideo': False,
             'noplaylist': True,
+            'js_runtimes': {'node': {}},
             'extractor_args': {
                 'youtube': {
-                    'player_client': ['mweb', 'android'],
+                    'player_client': ['tv', 'web'],
                 }
             },
             'ignoreerrors': True,

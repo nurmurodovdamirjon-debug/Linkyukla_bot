@@ -5,3 +5,4 @@ emoji>=2.8.0
 ffmpeg-python>=0.2.0
 # yt-dlp ni to'g'ridan-to'g'ri GitHubdan o'rnatish (eng yangi fixlar uchun)
 git+https://github.com/yt-dlp/yt-dlp.git@master
+yt-dlp-ejs>=0.8.0

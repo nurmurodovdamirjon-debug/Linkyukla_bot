@@ -1,9 +1,12 @@
 FROM python:3.10-slim
 
-# Tizim paketlarini (FFmpeg va git) o'rnatish
+# Tizim paketlarini (FFmpeg, git, curl, Node.js) o'rnatish
 RUN apt-get update && apt-get install -y \
     ffmpeg \
     git \
+    curl \
+    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/*
 
 # Loyiha fayllarini ko'chirish

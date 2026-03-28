@@ -159,22 +159,46 @@ def is_valid_url(text):
         return False
 
 
-def setup_cookies(ydl_opts):
-    """Cookies faylini opsiyalarga qo'shish (bir joyda markazlashtirilgan)."""
+def _get_cookies_path():
+    """Cookies faylini bir marta yaratish va yo'lini qaytarish (cache)."""
+    if hasattr(_get_cookies_path, '_cached'):
+        return _get_cookies_path._cached
+
     cookies_content = os.getenv('COOKIES_CONTENT')
     if cookies_content:
+        # Koyeb/Railway da \n literal bo'lib qolishi mumkin — tuzatish
+        if '\\n' in cookies_content and '\n' not in cookies_content:
+            cookies_content = cookies_content.replace('\\n', '\n')
+        # \t ham literal bo'lishi mumkin
+        if '\\t' in cookies_content and '\t' not in cookies_content:
+            cookies_content = cookies_content.replace('\\t', '\t')
+
         cookies_path = os.path.join(DOWNLOADS_DIR, 'cookies.txt')
         try:
             with open(cookies_path, 'w', encoding='utf-8') as f:
                 f.write(cookies_content)
-            ydl_opts['cookiefile'] = cookies_path
             logger.info(f"Cookies fayli yaratildi: {cookies_path}")
+            _get_cookies_path._cached = cookies_path
+            return cookies_path
         except Exception as e:
             logger.error(f"Cookies faylini yaratishda xatolik: {str(e)}")
     elif os.path.exists('cookies.txt'):
-        ydl_opts['cookiefile'] = 'cookies.txt'
+        _get_cookies_path._cached = 'cookies.txt'
+        return 'cookies.txt'
     elif os.path.exists(os.path.join(DOWNLOADS_DIR, 'cookies.txt')):
-        ydl_opts['cookiefile'] = os.path.join(DOWNLOADS_DIR, 'cookies.txt')
+        path = os.path.join(DOWNLOADS_DIR, 'cookies.txt')
+        _get_cookies_path._cached = path
+        return path
+
+    _get_cookies_path._cached = None
+    return None
+
+
+def setup_cookies(ydl_opts):
+    """Cookies faylini opsiyalarga qo'shish."""
+    cookies_path = _get_cookies_path()
+    if cookies_path:
+        ydl_opts['cookiefile'] = cookies_path
 
 
 def setup_proxy(ydl_opts):

@@ -94,23 +94,11 @@ class YouTubeHelper:
         ]
 
     def _add_cookies_to_options(self, options: Dict[str, Any]) -> None:
-        """YouTube cookies faylini opsiyalarga qo'shish."""
-        cookies_content = os.getenv('COOKIES_CONTENT')
-        if cookies_content:
-            import tempfile
-            temp_dir = tempfile.gettempdir()
-            cookies_path = os.path.join(temp_dir, 'youtube_cookies.txt')
-            try:
-                with open(cookies_path, 'w', encoding='utf-8') as f:
-                    f.write(cookies_content)
-                options['cookiefile'] = cookies_path
-                logger.info(f"YouTube cookies fayli yaratildi: {cookies_path}")
-            except Exception as e:
-                logger.error(f"YouTube cookies faylini yaratishda xatolik: {str(e)}")
-        elif os.path.exists('cookies.txt'):
-            options['cookiefile'] = 'cookies.txt'
-        elif os.path.exists(os.path.join('downloads', 'cookies.txt')):
-            options['cookiefile'] = os.path.join('downloads', 'cookies.txt')
+        """YouTube cookies faylini opsiyalarga qo'shish (bot.py dagi markaziy funksiyadan foydalanadi)."""
+        from src.bot import _get_cookies_path
+        cookies_path = _get_cookies_path()
+        if cookies_path:
+            options['cookiefile'] = cookies_path
 
     def is_youtube_bot_error(self, error_msg: str) -> bool:
         """YouTube bot xatosini aniqlash."""

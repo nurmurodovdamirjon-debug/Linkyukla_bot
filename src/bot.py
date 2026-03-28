@@ -10,6 +10,8 @@ import logging
 import os
 import re
 import shutil
+import threading
+from http.server import HTTPServer, BaseHTTPRequestHandler
 from urllib.parse import urlparse
 from dotenv import load_dotenv
 
@@ -628,8 +630,31 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         )
 
 
+class HealthCheckHandler(BaseHTTPRequestHandler):
+    """Koyeb health check uchun sodda HTTP handler."""
+    def do_GET(self):
+        self.send_response(200)
+        self.send_header('Content-type', 'text/plain')
+        self.end_headers()
+        self.wfile.write(b'OK')
+
+    def log_message(self, format, *args):
+        pass  # Loglarni yashirish
+
+
+def start_health_server():
+    """Koyeb uchun health check HTTP serverni background threadda ishga tushirish."""
+    port = int(os.getenv('PORT', '8000'))
+    server = HTTPServer(('0.0.0.0', port), HealthCheckHandler)
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    logger.info(f"Health check server port {port} da ishga tushdi")
+
+
 def main() -> None:
     """Botni ishga tushirish."""
+    # Koyeb health check serverini ishga tushirish
+    start_health_server()
     TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "").strip()
     TELEGRAM_BOT_TOKEN = "".join(char for char in TELEGRAM_BOT_TOKEN if ord(char) > 32)
 

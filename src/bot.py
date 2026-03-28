@@ -465,7 +465,17 @@ async def download_video(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         # Avval video ma'lumotlarini olish
         await progress_message.edit_text(f"{platform_sticker} Video tahlil qilinmoqda...")
 
-        with yt_dlp.YoutubeDL({'quiet': True, 'noplaylist': True}) as ydl:
+        # Info olish uchun ham cookies va YouTube sozlamalarini ishlatish
+        info_opts = {'quiet': True, 'noplaylist': True}
+        setup_cookies(info_opts)
+        setup_proxy(info_opts)
+        if is_youtube:
+            info_opts['extractor_args'] = {
+                'youtube': {
+                    'player_client': ['mweb', 'android'],
+                }
+            }
+        with yt_dlp.YoutubeDL(info_opts) as ydl:
             info_dict = ydl.extract_info(url, download=False)
             if info_dict is None:
                 await progress_message.edit_text(

@@ -74,13 +74,9 @@ class YouTubeHelper:
             'noplaylist': True,
             'extractor_args': {
                 'youtube': {
-                    'skip': ['dash', 'hls'],
-                    'player_skip': ['js', 'configs', 'webpage'],
-                    'player_client': ['android', 'ios'],
+                    'player_client': ['mweb', 'android'],
                 }
             },
-            'youtube_include_dash_manifest': False,
-            'youtube_include_hls_manifest': False,
             'ignoreerrors': True,
         }
 

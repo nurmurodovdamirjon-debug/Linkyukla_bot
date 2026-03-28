@@ -6,16 +6,11 @@ Button Handler - Telegram bot uchun tugma bosilganda ishlov berish
 """
 
 import logging
-import os
-import asyncio
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
 
 # Logger yaratish
 logger = logging.getLogger(__name__)
-
-# Global o'zgaruvchilar
-instagram_video_files = {}  # {user_id: {'video': video_filename, 'info': info_dict}}
 
 async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Tugma bosilganda ishlov berish."""
@@ -102,7 +97,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         elif data.startswith("insta_"):
             action_parts = data.split("_")
             action = action_parts[1]  # "video" yoki "both"
-            user_id = user.id
             
             if action == "both":
                 # Video + Audio
@@ -137,8 +131,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
                 "❌ Tugma bosilganda xatolik yuz berdi.\n"
                 "Iltimos, video URL manzilini bevosita yuboring."
             )
-        except:
+        except Exception:
             pass
 
-# Funksiyani eksport qilish
-__all__ = ['button_handler', 'instagram_video_files']
+__all__ = ['button_handler']

@@ -954,7 +954,8 @@ def main() -> None:
         print("   Linux: sudo apt install ffmpeg")
 
     # Build application with proper configuration
-    application = Application.builder().token(TELEGRAM_BOT_TOKEN).request_timeout(HTTP_TIMEOUT).build()
+    # Note: request_timeout is set via get_updates_request_timeout in run_polling
+    application = Application.builder().token(TELEGRAM_BOT_TOKEN).build()
 
     # Add handlers
     application.add_handler(CommandHandler("start", start))
@@ -965,9 +966,13 @@ def main() -> None:
 
     print("Bot ishga tushirilmoqda...")
     logger.info("Bot polling boshlandi")
-    
+
     try:
-        application.run_polling(allowed_updates=Update.ALL_TYPES)
+        application.run_polling(
+            allowed_updates=Update.ALL_TYPES,
+            timeout=HTTP_TIMEOUT,
+            read_latency=5.0
+        )
     except KeyboardInterrupt:
         print("\n🔄 Bot o'chirilmoqda...")
         logger.info("Bot KeyboardInterrupt orqali o'chirildi")

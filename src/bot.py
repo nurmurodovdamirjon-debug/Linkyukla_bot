@@ -477,16 +477,28 @@ async def download_video(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
                     'player_client': ['mweb', 'android'],
                 }
             }
-        with yt_dlp.YoutubeDL(info_opts) as ydl:
-            info_dict = ydl.extract_info(url, download=False)
-            if info_dict is None:
-                await progress_message.edit_text(
-                    "Kechirasiz, men bu videoni tahlil qila olmadim.\n"
-                    "Iltimos, URL manzil to'g'ri ekanligini tekshiring."
-                )
-                return
+        try:
+            with yt_dlp.YoutubeDL(info_opts) as ydl:
+                info_dict = ydl.extract_info(url, download=False)
+                if info_dict is None:
+                    await progress_message.edit_text(
+                        "Kechirasiz, men bu videoni tahlil qila olmadim.\n"
+                        "Iltimos, URL manzil to'g'ri ekanligini tekshiring."
+                    )
+                    return
 
-            video_duration = info_dict.get('duration', 0)
+                video_duration = info_dict.get('duration', 0)
+        except Exception as e:
+            error_msg = str(e)
+            logger.error(f"Video tahlil xatosi: {error_msg}")
+            if is_youtube and youtube_helper.is_youtube_bot_error(error_msg):
+                await progress_message.edit_text(youtube_helper.get_youtube_error_message())
+            else:
+                await progress_message.edit_text(
+                    f"Kechirasiz, men bu videoni tahlil qila olmadim.\n"
+                    f"Xato: {error_msg[:200]}"
+                )
+            return
 
         # Video davomiyligini tekshirish
         max_duration = int(os.getenv("MAX_VIDEO_DURATION", "6000"))
